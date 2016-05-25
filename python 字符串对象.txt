@@ -1,0 +1,39 @@
+python2 系列内部有两种字符串类型
+str  与 unicode 类型
+都是从basestring类里继承的
+
+区别是：
+str对象是字节串 unicode是字符串
+举个例子：
+foo=“大壮”
+foo=u“大壮”
+前者是str对象，也就是字节串，所谓字节串是指经过字符经过编码后的字节，比如“大壮”这两个字，在多种字符集里有不同的编码，比如在MBCS（multi byte char set）里会编成“\xb4\xf3\xd7\xb3”，而在unicode里是u'\u5927\u58ee'。大壮是两个字，但是这两个字编码后可能不止两个字符，而str对象显示的总是编码后的对象，windows系统默认的是gbk编码，所以这个str对象就默认被按照gbk编码。
+因为str对象本身就是编码过后的了，所以不应对str对象调用encode方法，但是如果调用了encode方法的str对象，不会报错，而是返回另外一个相同内容但不同id的str，这一点要注意。
+
+
+
+unicode对象：字符串对象
+unicode 本身是一种字符集 UCS，使用两个字节来表示全世界的语言文字（256×256=65536），是对原来字符表示方式（MBCS）的统一化方案，本来unicode正好对应使用utf-16编码方案，也就是一个字编码成两字节，但是这样对acsii字符会多出一倍的数据量（acsii编码本身只要一个字节，如果使用utf-16编码，全部要变成两个字节），所以推出了utf-8编码成为主流，也就是acsii字符还是只占一个字节，但是汉字可能会从原来的两字节变成三字节甚至更多。
+
+python中的unicode对象是指已经进行解码后的字符串，对于unicode只能进行decode编码操作。
+
+
+实例：
+str：
+》》guda="大壮"#给guda赋值大壮
+》》guda  #调用guda的repr方法
+'\xb4\xf3\xd7\xb3' #输出的字符串已经是使用gbk编码后的了
+》》print guda #使用print方法
+大壮 #此方法会自动解码 
+
+unicode：
+》》guda=u"大壮"#给guda赋值大壮
+》》guda #调用guda的repr方法
+u'\u5927\u58ee' #显示的既不是utf8编码后的字符（'\xe5\xa4\xa7\xe5\xa3\xae'），也不是utf16编码后的字符串（"\xff\xfe'Y\xeeX"）
+                                  #应该就是UCS本身的对应码
+》》print guda    #
+大壮                        #会自动解码
+
+
+
+
